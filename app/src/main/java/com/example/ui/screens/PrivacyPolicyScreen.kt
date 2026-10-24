@@ -111,7 +111,7 @@ fun PrivacyPolicyScreen(
 
             PolicySection(
                 title = "5. Data Deletion",
-                body = "You have total control over your data. You may delete individual records at any time, or use the 'Erase All App Records' action in Settings to wipe all database entries, receipt photos, and scheduled notification alarms simultaneously. Uninstalling the application removes all application data completely."
+                body = "You have total control over your data. You may delete individual records at any time directly in the app, or clear all application data via your device's System Settings (Settings > Apps > LifeVault > Storage & Cache > Clear Storage). Uninstalling the application removes all local application data completely."
             )
 
             PolicySection(

@@ -380,15 +380,15 @@ fun DashboardScreen(
                                 color = MaterialTheme.colorScheme.onSurfaceVariant
                             )
                             if (allActiveItems.isEmpty()) {
-                                Spacer(modifier = Modifier.height(12.dp))
+                                Spacer(modifier = Modifier.height(14.dp))
                                 Button(
-                                    onClick = { viewModel.loadDemoData() },
-                                    colors = ButtonDefaults.buttonColors(
-                                        containerColor = MaterialTheme.colorScheme.primaryContainer,
-                                        contentColor = MaterialTheme.colorScheme.onPrimaryContainer
-                                    )
+                                    onClick = onNavigateToAdd,
+                                    shape = RoundedCornerShape(12.dp),
+                                    modifier = Modifier.testTag("dashboard_empty_add_button")
                                 ) {
-                                    Text("Load Sample Records")
+                                    Icon(Icons.Default.Add, contentDescription = null, modifier = Modifier.size(16.dp))
+                                    Spacer(modifier = Modifier.width(6.dp))
+                                    Text("Add Your First Record")
                                 }
                             }
                         }

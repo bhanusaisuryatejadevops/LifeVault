@@ -22,16 +22,10 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowForward
-import androidx.compose.material.icons.filled.AdsClick
-import androidx.compose.material.icons.filled.CleaningServices
 import androidx.compose.material.icons.filled.CloudDownload
 import androidx.compose.material.icons.filled.CloudUpload
-import androidx.compose.material.icons.filled.DeleteForever
-import androidx.compose.material.icons.filled.DarkMode
-import androidx.compose.material.icons.filled.Lock
 import androidx.compose.material.icons.filled.Notifications
 import androidx.compose.material.icons.filled.Policy
-import androidx.compose.material.icons.filled.Science
 import androidx.compose.material.icons.filled.Security
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Button
@@ -42,7 +36,6 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Scaffold
-import androidx.compose.material3.Switch
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.material3.TopAppBar
@@ -59,6 +52,7 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import com.example.monetization.LifeVaultBannerAd
 import com.example.ui.VaultViewModel
 import kotlinx.coroutines.launch
@@ -81,15 +75,12 @@ fun SettingsScreen(
     var importPayloadText by remember { mutableStateOf("") }
     var importPassword by remember { mutableStateOf("") }
 
-    var showClearAllDialog by remember { mutableStateOf(false) }
-    var showDemoSeedDialog by remember { mutableStateOf(false) }
-
     Scaffold(
         topBar = {
             TopAppBar(
                 title = {
                     Text(
-                        text = "Settings & Vault Privacy",
+                        text = "Settings",
                         style = MaterialTheme.typography.titleLarge,
                         fontWeight = FontWeight.Bold
                     )
@@ -112,7 +103,7 @@ fun SettingsScreen(
                 .padding(16.dp),
             verticalArrangement = Arrangement.spacedBy(16.dp)
         ) {
-            // Privacy & Zero-Cloud Guarantee Card
+            // Privacy Assurance Card
             Card(
                 modifier = Modifier.fillMaxWidth(),
                 shape = RoundedCornerShape(16.dp),
@@ -140,7 +131,7 @@ fun SettingsScreen(
                         )
                         Spacer(modifier = Modifier.height(2.dp))
                         Text(
-                            text = "Your receipts, serial numbers, and personal records never leave this device. No account, no cloud servers, no tracking.",
+                            text = "Your receipts, serial numbers, and personal records remain strictly on this device. No account required, no remote servers, no personal tracking.",
                             style = MaterialTheme.typography.bodySmall,
                             color = MaterialTheme.colorScheme.onSurfaceVariant
                         )
@@ -148,7 +139,47 @@ fun SettingsScreen(
                 }
             }
 
-            // Backup & Encryption
+            // Notification Reminders Overview Card
+            Card(
+                modifier = Modifier.fillMaxWidth(),
+                shape = RoundedCornerShape(16.dp),
+                colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surface),
+                elevation = CardDefaults.cardElevation(defaultElevation = 2.dp)
+            ) {
+                Column(
+                    modifier = Modifier.padding(16.dp),
+                    verticalArrangement = Arrangement.spacedBy(8.dp)
+                ) {
+                    Row(verticalAlignment = Alignment.CenterVertically) {
+                        Icon(
+                            imageVector = Icons.Default.Notifications,
+                            contentDescription = null,
+                            tint = MaterialTheme.colorScheme.primary,
+                            modifier = Modifier.size(20.dp)
+                        )
+                        Spacer(modifier = Modifier.width(10.dp))
+                        Text(
+                            text = "Smart Reminder Schedule",
+                            style = MaterialTheme.typography.titleMedium,
+                            fontWeight = FontWeight.Bold
+                        )
+                    }
+                    Text(
+                        text = "LifeVault triggers automated notifications locally on your device for upcoming deadlines:",
+                        style = MaterialTheme.typography.bodySmall,
+                        color = MaterialTheme.colorScheme.onSurfaceVariant
+                    )
+                    Spacer(modifier = Modifier.height(4.dp))
+                    Text(
+                        text = "• Return Deadlines: 2 days before window closes\n• Warranty Expirations: 14 days before coverage ends\n• Document Expiry: 30 days before renewal date",
+                        style = MaterialTheme.typography.bodySmall,
+                        lineHeight = 20.sp,
+                        color = MaterialTheme.colorScheme.onSurface
+                    )
+                }
+            }
+
+            // Backup & Data Export
             Card(
                 modifier = Modifier.fillMaxWidth(),
                 shape = RoundedCornerShape(16.dp),
@@ -183,7 +214,7 @@ fun SettingsScreen(
                 }
             }
 
-            // Demo & Sample Data Management
+            // Legal & Privacy Policy
             Card(
                 modifier = Modifier.fillMaxWidth(),
                 shape = RoundedCornerShape(16.dp),
@@ -195,87 +226,18 @@ fun SettingsScreen(
                     verticalArrangement = Arrangement.spacedBy(12.dp)
                 ) {
                     Text(
-                        text = "Demo Mode & Testing",
-                        style = MaterialTheme.typography.titleMedium,
-                        fontWeight = FontWeight.Bold
-                    )
-
-                    SettingsActionRow(
-                        title = "Load Sample Showcase Records",
-                        subtitle = "Populates 6 realistic sample items (marked as demo)",
-                        icon = Icons.Default.Science,
-                        onClick = { showDemoSeedDialog = true },
-                        tag = "load_sample_data_row"
-                    )
-
-                    SettingsActionRow(
-                        title = "Clear Demo Records",
-                        subtitle = "Removes only sample items without touching user data",
-                        icon = Icons.Default.CleaningServices,
-                        onClick = {
-                            viewModel.clearDemoData()
-                            Toast.makeText(context, "Demo records removed", Toast.LENGTH_SHORT).show()
-                        },
-                        tag = "clear_demo_data_row"
-                    )
-
-                    SettingsActionRow(
-                        title = "Erase All App Records",
-                        subtitle = "Permanently deletes all records, receipts, and alarms",
-                        icon = Icons.Default.DeleteForever,
-                        iconTint = MaterialTheme.colorScheme.error,
-                        onClick = { showClearAllDialog = true },
-                        tag = "erase_all_data_row"
-                    )
-                }
-            }
-
-            // Monetization & AdMob Policy
-            Card(
-                modifier = Modifier.fillMaxWidth(),
-                shape = RoundedCornerShape(16.dp),
-                colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surface),
-                elevation = CardDefaults.cardElevation(defaultElevation = 2.dp)
-            ) {
-                Column(
-                    modifier = Modifier.padding(16.dp),
-                    verticalArrangement = Arrangement.spacedBy(12.dp)
-                ) {
-                    Text(
-                        text = "Monetization & Advertising",
+                        text = "About & Privacy",
                         style = MaterialTheme.typography.titleMedium,
                         fontWeight = FontWeight.Bold
                     )
 
                     SettingsActionRow(
                         title = "Privacy Policy & Data Safety",
-                        subtitle = "Read our strict privacy guarantees and Play Store disclosures",
+                        subtitle = "Learn about our strict offline guarantees and data disclosures",
                         icon = Icons.Default.Policy,
                         onClick = onNavigateToPrivacy,
                         tag = "privacy_policy_row"
                     )
-
-                    Row(verticalAlignment = Alignment.CenterVertically) {
-                        Icon(
-                            imageVector = Icons.Default.AdsClick,
-                            contentDescription = null,
-                            tint = MaterialTheme.colorScheme.onSurfaceVariant,
-                            modifier = Modifier.size(20.dp)
-                        )
-                        Spacer(modifier = Modifier.width(12.dp))
-                        Column {
-                            Text(
-                                text = "Google AdMob Status",
-                                style = MaterialTheme.typography.bodyMedium,
-                                fontWeight = FontWeight.Medium
-                            )
-                            Text(
-                                text = "Test Ads Mode Active (Non-intrusive banners and frequency-capped interstitials)",
-                                style = MaterialTheme.typography.bodySmall,
-                                color = MaterialTheme.colorScheme.onSurfaceVariant
-                            )
-                        }
-                    }
                 }
             }
 
@@ -287,7 +249,7 @@ fun SettingsScreen(
                 contentAlignment = Alignment.Center
             ) {
                 Text(
-                    text = "LifeVault v1.0 • Built with Kotlin & Jetpack Compose",
+                    text = "LifeVault v1.0 • Private Life Organizer",
                     style = MaterialTheme.typography.labelSmall,
                     color = MaterialTheme.colorScheme.onSurfaceVariant
                 )
@@ -430,58 +392,6 @@ fun SettingsScreen(
             },
             dismissButton = {
                 TextButton(onClick = { showImportDialog = false }) {
-                    Text("Cancel")
-                }
-            }
-        )
-    }
-
-    // Clear All Dialog
-    if (showClearAllDialog) {
-        AlertDialog(
-            onDismissRequest = { showClearAllDialog = false },
-            title = { Text("Erase All Data?") },
-            text = { Text("This will permanently remove all product warranties, receipts, return windows, and scheduled reminders from this device.") },
-            confirmButton = {
-                TextButton(
-                    onClick = {
-                        viewModel.clearAllData()
-                        showClearAllDialog = false
-                        Toast.makeText(context, "All records wiped", Toast.LENGTH_SHORT).show()
-                    },
-                    modifier = Modifier.testTag("confirm_erase_button")
-                ) {
-                    Text("Wipe Everything", color = MaterialTheme.colorScheme.error)
-                }
-            },
-            dismissButton = {
-                TextButton(onClick = { showClearAllDialog = false }) {
-                    Text("Cancel")
-                }
-            }
-        )
-    }
-
-    // Demo Seed Dialog
-    if (showDemoSeedDialog) {
-        AlertDialog(
-            onDismissRequest = { showDemoSeedDialog = false },
-            title = { Text("Load Sample Showcase Data?") },
-            text = { Text("This inserts 6 sample items (MacBook, Sony Headphones, Dyson Vacuum, Passport, Breville, Patagonia) marked as demo records. You can delete them at any time with 'Clear Demo Records'.") },
-            confirmButton = {
-                Button(
-                    onClick = {
-                        viewModel.loadDemoData()
-                        showDemoSeedDialog = false
-                        Toast.makeText(context, "Sample records loaded", Toast.LENGTH_SHORT).show()
-                    },
-                    modifier = Modifier.testTag("confirm_seed_demo_button")
-                ) {
-                    Text("Load Sample Records")
-                }
-            },
-            dismissButton = {
-                TextButton(onClick = { showDemoSeedDialog = false }) {
                     Text("Cancel")
                 }
             }

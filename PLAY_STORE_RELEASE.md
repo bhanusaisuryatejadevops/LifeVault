@@ -48,9 +48,6 @@ Visualize all your upcoming deadlines in an intuitive timeline so you can plan s
 
 🔐 Encrypted Local Backups
 Export your complete records into an AES-256-GCM encrypted backup file secured by your personal master password. Keep your backup on your device or transfer it securely under your own terms.
-
-💡 Optional Showcase Demo Mode
-Explore LifeVault with realistic sample records in one tap. Remove them whenever you wish without affecting your personal entries.
 ```
 
 ---
@@ -61,7 +58,7 @@ Explore LifeVault with realistic sample records in one tap. Remove them whenever
 |---|---|---|
 | **Does your app collect or share any user data?** | **Yes** | Solely third-party diagnostic & advertising data processed by the Google Mobile Ads SDK (AdMob). The core app collects 0 bytes of user data. |
 | **Is all user data collected by your app encrypted in transit?** | **Yes** | All SDK network traffic uses HTTPS/TLS. |
-| **Do you provide a way for users to request that their data be deleted?** | **Yes** | The app includes an in-app "Erase All App Records" feature, and all records are strictly local to the user's device. |
+| **Do you provide a way for users to request that their data be deleted?** | **Yes** | Users have total control to delete any individual records at any time directly in the app, or clear all app data via Android Settings > Apps > LifeVault > Clear Storage. |
 | **Personal Info (Name, Email, Address, Phone)** | **Not collected** | No accounts or cloud databases are used. |
 | **Financial Info (Receipts, Credit Cards, Purchase History)** | **Not collected** | All receipt photos, purchase prices, and store names remain on the physical device. |
 | **Photos and Videos** | **Not collected** | Receipt photos are stored exclusively in the app's internal sandboxed storage. |
