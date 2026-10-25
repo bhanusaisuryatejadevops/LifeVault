@@ -1,0 +1,24 @@
+# Developer Contact & Support Details for Google Play Store
+
+In Google Play Console, navigate to:
+**Grow > Store presence > Store settings > Store listing contact details**
+
+Fill in the following fields with your actual details:
+
+1. Email Address (Mandatory):
+   support@yourdomain.com
+   [REPLACE with your real public support email address, e.g. yourname.apps@gmail.com]
+
+2. Phone Number (Optional):
+   [Leave blank unless you offer phone-based customer support]
+
+3. Website URL (Optional / Recommended):
+   https://YOUR_GITHUB_USERNAME.github.io/lifevault-privacy/
+   [Can point to your free GitHub Pages privacy website or personal portfolio]
+
+4. Physical Address (Required by Google Play if Monetization/Ads are enabled):
+   [Google Play policy requires developers whose apps display ads or in-app purchases to provide a physical mailing address in Play Console account settings for consumer protection compliance.]
+   Street Address: [Your Mailing Address / P.O. Box]
+   City, State/Province: [Your City, State]
+   Country: [Your Country]
+   Postal Code: [Your Postal Code]

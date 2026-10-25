@@ -1,0 +1,35 @@
+LifeVault is your private, offline personal life organizer designed to keep you on top of product warranties, purchase receipts, return deadlines, document expiration dates, and important personal reminders—with 100% on-device privacy.
+
+Never lose money on an expired return window or miss a manufacturer warranty claim again.
+
+KEY FEATURES:
+
+🛡️ 100% Private & Offline by Design
+Your financial data, purchase receipts, serial numbers, and personal notes belong to you. LifeVault operates entirely on your device with no required cloud accounts, no user logins, and zero telemetry tracking your personal items.
+
+📷 On-Device Receipt Scanner & OCR
+Capture paper receipts using your phone's camera or photo library. LifeVault processes receipt images directly on your device using on-device machine learning text recognition (Google ML Kit) to detect merchant names, purchase totals, and dates. You always review and confirm extracted candidates before saving.
+
+⏰ Smart Deadline Alerts & Reminders
+Get timely, customizable notifications before:
+• Return windows close (default 2 days before)
+• Manufacturer and extended warranties expire (default 14 days before)
+• Passports, driver's licenses, and IDs expire (default 30 days before)
+• Custom maintenance dates or service renewals occur
+
+📊 Comprehensive Dashboard & Metrics
+At a glance, monitor:
+• Active warranty coverage
+• Urgent closing return windows
+• Upcoming expirations and overdue items
+• Total protected asset valuation
+• Categorized breakdown across Electronics, Appliances, Home, Vehicles, Documents, and more
+
+📅 Chronological Timeline & Calendar Schedule
+Visualize all your upcoming deadlines in an intuitive timeline so you can plan service requests, returns, and renewals well ahead of time.
+
+🔐 Encrypted Local Backups
+Export your complete records into an AES-256-GCM encrypted backup file secured by your personal master password. Keep your backup on your device or transfer it securely under your own terms.
+
+WHY CHOOSE LIFEVAULT?
+Most reminder and organizer apps require creating an online account and store your receipts on their servers. LifeVault is built on the belief that personal documents and purchasing habits should remain private on your physical device. It functions reliably offline without an internet connection.

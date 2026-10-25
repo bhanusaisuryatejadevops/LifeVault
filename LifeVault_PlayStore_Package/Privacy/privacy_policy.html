@@ -1,0 +1,226 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Privacy Policy - LifeVault: Private Organizer</title>
+    <style>
+        :root {
+            --primary: #1E3A8A;
+            --primary-dark: #0F172A;
+            --accent: #0F766E;
+            --text-main: #1E293B;
+            --text-muted: #64748B;
+            --bg-page: #F8FAFC;
+            --bg-card: #FFFFFF;
+            --border: #E2E8F0;
+        }
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+            background-color: var(--bg-page);
+            color: var(--text-main);
+            line-height: 1.65;
+            padding: 24px 16px;
+        }
+        .container {
+            max-width: 760px;
+            margin: 0 auto;
+            background-color: var(--bg-card);
+            border-radius: 16px;
+            border: 1px solid var(--border);
+            padding: 40px 32px;
+            box-shadow: 0 4px 16px rgba(15, 23, 42, 0.04);
+        }
+        .header {
+            border-bottom: 2px solid var(--border);
+            padding-bottom: 24px;
+            margin-bottom: 32px;
+        }
+        .badge {
+            display: inline-block;
+            background-color: #DBEAFE;
+            color: var(--primary);
+            font-size: 13px;
+            font-weight: 600;
+            padding: 4px 12px;
+            border-radius: 9999px;
+            margin-bottom: 12px;
+        }
+        h1 {
+            color: var(--primary-dark);
+            font-size: 28px;
+            font-weight: 800;
+            margin-bottom: 8px;
+        }
+        .effective-date {
+            font-size: 14px;
+            color: var(--text-muted);
+        }
+        h2 {
+            color: var(--primary-dark);
+            font-size: 20px;
+            font-weight: 700;
+            margin-top: 32px;
+            margin-bottom: 12px;
+            display: flex;
+            align-items: center;
+        }
+        h2::before {
+            content: "";
+            display: inline-block;
+            width: 4px;
+            height: 20px;
+            background-color: var(--primary);
+            border-radius: 2px;
+            margin-right: 10px;
+        }
+        p, ul {
+            margin-bottom: 16px;
+            font-size: 15px;
+        }
+        ul {
+            padding-left: 24px;
+        }
+        li {
+            margin-bottom: 8px;
+        }
+        .highlight-box {
+            background-color: #F1F5F9;
+            border-left: 4px solid var(--accent);
+            padding: 16px 20px;
+            border-radius: 8px;
+            margin: 20px 0;
+            font-size: 14px;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 20px 0;
+            font-size: 14px;
+        }
+        th, td {
+            text-align: left;
+            padding: 12px 14px;
+            border: 1px solid var(--border);
+        }
+        th {
+            background-color: #F8FAFC;
+            color: var(--primary-dark);
+            font-weight: 600;
+        }
+        .footer {
+            margin-top: 40px;
+            padding-top: 24px;
+            border-top: 1px solid var(--border);
+            font-size: 13px;
+            color: var(--text-muted);
+            text-align: center;
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <div class="header">
+        <span class="badge">Official Privacy Policy</span>
+        <h1>LifeVault: Private Organizer</h1>
+        <div class="effective-date">Last Updated: October 2026 | Application Version 1.0</div>
+    </div>
+
+    <div class="highlight-box">
+        <strong>Executive Privacy Guarantee:</strong> LifeVault is designed with 100% on-device privacy. Your purchase receipts, warranty certificates, notes, serial numbers, and personal dates are stored entirely on your physical device. We operate no user accounts, maintain no cloud databases, and never upload your personal records.
+    </div>
+
+    <h2>1. Introduction</h2>
+    <p>LifeVault ("the Application", "we", "us") is an offline-first Android application designed to help users track personal product warranties, purchase receipts, return deadlines, document expiration dates, and personal reminders. This Privacy Policy informs you how data is handled when you use the Application.</p>
+
+    <h2>2. Data Collected &amp; Stored Locally on Your Device</h2>
+    <p>All core functional records created by you reside strictly inside your device's private, sandboxed internal storage:</p>
+    <ul>
+        <li><strong>Item &amp; Warranty Details:</strong> Product names, category selections, store names, purchase amounts, purchase dates, warranty expiration dates, return window deadlines, and document renewal dates. Stored in a local SQLite database (Room).</li>
+        <li><strong>Receipt Photographs:</strong> Captured or imported receipt images are copied directly into the app's sandboxed file storage directory (<code>context.filesDir/receipts/</code>). They are never synchronized to external servers.</li>
+        <li><strong>On-Device Machine Learning (OCR):</strong> Receipt text extraction is performed on-device utilizing Google ML Kit. Image analysis executes strictly within your device's memory; raw image bytes and extracted text never leave your device.</li>
+        <li><strong>Serial Numbers &amp; Personal Notes:</strong> Stored strictly in local device storage.</li>
+    </ul>
+
+    <h2>3. Encrypted Data Backups &amp; User Ownership</h2>
+    <p>LifeVault includes an optional local backup and restore feature. When you create a backup:</p>
+    <ul>
+        <li>You may specify a master password to encrypt your entire database using industry-standard <strong>AES-256-GCM</strong> encryption with PBKDF2 key derivation (10,000 iterations).</li>
+        <li>The resulting encrypted backup file is saved or shared solely through your device's standard Android file system under your manual direction. LifeVault never automatically uploads, syncs, or mirrors backup files.</li>
+    </ul>
+
+    <h2>4. Android Device Permissions Used</h2>
+    <p>LifeVault requests only the minimum Android permissions necessary to provide its core utility and display policy-compliant advertisements:</p>
+    <table>
+        <thead>
+            <tr>
+                <th>Permission</th>
+                <th>Type</th>
+                <th>Purpose</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td><code>POST_NOTIFICATIONS</code></td>
+                <td>Runtime (Android 13+)</td>
+                <td>Used strictly to display scheduled notifications on your device prior to warranty expirations, return deadlines, and document renewals.</td>
+            </tr>
+            <tr>
+                <td><code>RECEIVE_BOOT_COMPLETED</code></td>
+                <td>Install-Time</td>
+                <td>Allows the app to reschedule your local notification alarms after your device is restarted or updated.</td>
+            </tr>
+            <tr>
+                <td><code>VIBRATE</code></td>
+                <td>Install-Time</td>
+                <td>Allows your device to vibrate when a scheduled deadline notification is posted.</td>
+            </tr>
+            <tr>
+                <td><code>INTERNET</code> &amp; <code>ACCESS_NETWORK_STATE</code></td>
+                <td>Install-Time</td>
+                <td>Required by the Google Mobile Ads SDK (Google AdMob) to fetch and serve advertising banners and transitions.</td>
+            </tr>
+        </tbody>
+    </table>
+    <p><em>Note: Receipt photo selection utilizes the zero-permission Android Photo Picker. LifeVault does not request broad storage permissions (such as <code>READ_EXTERNAL_STORAGE</code> or <code>READ_MEDIA_IMAGES</code>).</em></p>
+
+    <h2>5. Third-Party Services &amp; Advertising (Google AdMob)</h2>
+    <p>LifeVault is supported by advertising delivered through <strong>Google AdMob</strong> (Google Mobile Ads SDK). The advertising SDK may automatically process certain technical data according to Google's applicable policies:</p>
+    <ul>
+        <li><strong>Device Identifiers:</strong> Ephemeral advertising identifiers (such as the Google Advertising ID), IP address (for general coarse geographic location and fraud prevention), and device hardware technical specifications.</li>
+        <li><strong>Diagnostic &amp; Performance Telemetry:</strong> Crash reports, network error statistics, and ad view interaction data collected by the Google Mobile Ads SDK to ensure ad delivery and comply with frequency capping rules.</li>
+        <li><strong>Privacy Safeguard:</strong> Google AdMob operates independently of your local vault database. AdMob has no access to your receipts, warranty records, prices, stores, or personal notes.</li>
+    </ul>
+    <p>For more details on how Google processes advertising information, visit <a href="https://policies.google.com/technologies/ads" target="_blank" rel="noopener">Google's Advertising Privacy &amp; Terms</a>.</p>
+
+    <h2>6. Data Retention &amp; User Deletion Rights</h2>
+    <p>Because all records reside locally on your device, you have total, immediate control over data retention:</p>
+    <ul>
+        <li><strong>Individual Item Deletion:</strong> You can delete any item record and its associated receipt photo at any time from the record detail screen.</li>
+        <li><strong>Complete App Wipe:</strong> You can clear all data at any time via your device's System Settings (<strong>Settings &gt; Apps &gt; LifeVault &gt; Storage &amp; Cache &gt; Clear Storage</strong>).</li>
+        <li><strong>Uninstalling the App:</strong> Uninstalling LifeVault from your device immediately and permanently deletes all database entries, receipt images, and scheduled alarms.</li>
+    </ul>
+
+    <h2>7. Children's Privacy</h2>
+    <p>LifeVault is a general audience utility intended for individuals managing adult consumer purchases, warranties, and property documents. The Application does not knowingly collect any personally identifiable information from children under the age of 13.</p>
+
+    <h2>8. Changes to This Privacy Policy</h2>
+    <p>We may update this Privacy Policy from time to time. Any revisions will be reflected on this page with an updated Effective Date. Continued use of the Application signifies your acceptance of any revisions.</p>
+
+    <h2>9. Contact Us</h2>
+    <p>If you have any questions or concerns regarding this Privacy Policy, please contact developer support:</p>
+    <p><strong>Email:</strong> [INSERT_YOUR_PUBLIC_SUPPORT_EMAIL, e.g. support@yourdomain.com]</p>
+
+    <div class="footer">
+        &copy; 2026 LifeVault. All rights reserved. Built with Kotlin and Jetpack Compose.
+    </div>
+</div>
+
+</body>
+</html>
