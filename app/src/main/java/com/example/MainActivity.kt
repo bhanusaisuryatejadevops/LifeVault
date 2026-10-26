@@ -50,7 +50,7 @@ sealed class NavDestination {
     object Timeline : NavDestination()
     object Settings : NavDestination()
     data class Detail(val itemId: Long) : NavDestination()
-    data class AddEdit(val itemId: Long? = null) : NavDestination()
+    data class AddEdit(val itemId: Long? = null, val openCameraOnLaunch: Boolean = false) : NavDestination()
     object PrivacyPolicy : NavDestination()
 }
 
@@ -182,8 +182,8 @@ fun LifeVaultAppRoot(
             is NavDestination.Dashboard -> {
                 DashboardScreen(
                     viewModel = viewModel,
-                    onNavigateToAdd = { navStack.add(NavDestination.AddEdit(null)) },
-                    onNavigateToScan = { navStack.add(NavDestination.AddEdit(null)) },
+                    onNavigateToAdd = { navStack.add(NavDestination.AddEdit(null, openCameraOnLaunch = false)) },
+                    onNavigateToScan = { navStack.add(NavDestination.AddEdit(null, openCameraOnLaunch = true)) },
                     onNavigateToList = {
                         navStack.clear()
                         navStack.add(NavDestination.ItemList)
@@ -245,6 +245,7 @@ fun LifeVaultAppRoot(
             is NavDestination.AddEdit -> {
                 AddEditItemScreen(
                     itemId = currentDestination.itemId,
+                    openCameraOnLaunch = currentDestination.openCameraOnLaunch,
                     viewModel = viewModel,
                     onNavigateBack = {
                         if (navStack.size > 1) navStack.removeAt(navStack.size - 1)

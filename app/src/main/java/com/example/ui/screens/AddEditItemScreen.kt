@@ -2,11 +2,13 @@ package com.example.ui.screens
 
 import android.app.DatePickerDialog
 import android.content.Context
+import android.content.pm.PackageManager
 import android.net.Uri
 import android.widget.Toast
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.PickVisualMediaRequest
 import androidx.activity.result.contract.ActivityResultContracts
+import androidx.core.content.FileProvider
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -29,6 +31,8 @@ import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.filled.AddPhotoAlternate
+import androidx.compose.material.icons.filled.PhotoCamera
+import androidx.compose.material.icons.filled.PhotoLibrary
 import androidx.compose.material.icons.filled.CalendarToday
 import androidx.compose.material.icons.filled.Check
 import androidx.compose.material.icons.filled.Close
@@ -98,6 +102,7 @@ import java.util.concurrent.TimeUnit
 fun AddEditItemScreen(
     itemId: Long? = null,
     initialScanUri: Uri? = null,
+    openCameraOnLaunch: Boolean = false,
     viewModel: VaultViewModel,
     onNavigateBack: () -> Unit,
     onSaved: (Long) -> Unit,
@@ -174,6 +179,59 @@ fun AddEditItemScreen(
         }
     }
 
+    var pendingCameraUri by remember { mutableStateOf<Uri?>(null) }
+    var pendingCameraFile by remember { mutableStateOf<File?>(null) }
+
+    // Take Picture Launcher (camera capture via FileProvider without requiring broad storage permissions)
+    val takePictureLauncher = rememberLauncherForActivityResult(
+        contract = ActivityResultContracts.TakePicture()
+    ) { success: Boolean ->
+        val file = pendingCameraFile
+        val uri = pendingCameraUri
+        if (success && file != null && uri != null && file.exists() && file.length() > 0) {
+            receiptImagePath = file.absolutePath
+            Toast.makeText(context, "Receipt captured successfully", Toast.LENGTH_SHORT).show()
+            runOcrOnUri(uri)
+        } else {
+            // Clean up 0-byte file created by system camera if user cancelled
+            if (file != null && file.exists() && file.length() == 0L) {
+                file.delete()
+            }
+            // Graceful cancellation: existing form fields remain intact
+        }
+    }
+
+    fun launchCamera() {
+        val pm = context.packageManager
+        val hasCamera = pm.hasSystemFeature(PackageManager.FEATURE_CAMERA_ANY)
+        if (!hasCamera) {
+            Toast.makeText(context, "Camera is not available on this device", Toast.LENGTH_LONG).show()
+            return
+        }
+        try {
+            val receiptsDir = File(context.filesDir, "receipts").apply { mkdirs() }
+            val newFile = File(receiptsDir, "receipt_${UUID.randomUUID()}.jpg")
+            val photoUri = FileProvider.getUriForFile(
+                context,
+                "${context.packageName}.fileprovider",
+                newFile
+            )
+            pendingCameraFile = newFile
+            pendingCameraUri = photoUri
+            takePictureLauncher.launch(photoUri)
+        } catch (e: Exception) {
+            Toast.makeText(context, "Could not launch camera: ${e.message}", Toast.LENGTH_SHORT).show()
+        }
+    }
+
+    var cameraAutoLaunched by remember { mutableStateOf(false) }
+    LaunchedEffect(openCameraOnLaunch) {
+        if (openCameraOnLaunch && !cameraAutoLaunched) {
+            cameraAutoLaunched = true
+            launchCamera()
+        }
+    }
+
     // Zero-permission Photo Picker from Google Play Policy guidelines
     val photoPickerLauncher = rememberLauncherForActivityResult(
         contract = ActivityResultContracts.PickVisualMedia()
@@ -195,8 +253,36 @@ fun AddEditItemScreen(
                         null
                     }
                 }
-                receiptImagePath = localPath ?: sourceUri.toString()
-                runOcrOnUri(sourceUri)
+                val path = localPath ?: sourceUri.toString()
+                receiptImagePath = path
+                val targetUri = localPath?.let {
+                    try {
+                        FileProvider.getUriForFile(
+                            context,
+                            "${context.packageName}.fileprovider",
+                            File(it)
+                        )
+                    } catch (e: Exception) {
+                        sourceUri
+                    }
+                } ?: sourceUri
+                runOcrOnUri(targetUri)
+            }
+        }
+    }
+
+    fun getUriForReceiptPath(path: String): Uri {
+        return if (path.startsWith("content://")) {
+            Uri.parse(path)
+        } else {
+            try {
+                FileProvider.getUriForFile(
+                    context,
+                    "${context.packageName}.fileprovider",
+                    File(path)
+                )
+            } catch (e: Exception) {
+                Uri.fromFile(File(path))
             }
         }
     }
@@ -295,29 +381,30 @@ fun AddEditItemScreen(
             ) {
                 Column(modifier = Modifier.padding(16.dp)) {
                     Text(
-                        text = "Receipt & OCR Scanner",
+                        text = "Receipt Photo & OCR Scanner",
                         style = MaterialTheme.typography.titleMedium,
                         fontWeight = FontWeight.Bold
                     )
                     Spacer(modifier = Modifier.height(4.dp))
                     Text(
-                        text = "Attach a photo or scan with on-device ML Kit to automatically detect dates, prices, and merchant.",
+                        text = "Take a photo with your camera or select from your gallery. On-device ML Kit extracts dates, prices, and merchant details.",
                         style = MaterialTheme.typography.bodySmall,
                         color = MaterialTheme.colorScheme.onSurfaceVariant
                     )
 
-                    Spacer(modifier = Modifier.height(12.dp))
+                    Spacer(modifier = Modifier.height(14.dp))
 
                     if (!receiptImagePath.isNullOrBlank()) {
                         Box(
                             modifier = Modifier
                                 .fillMaxWidth()
-                                .height(160.dp)
+                                .height(180.dp)
                                 .clip(RoundedCornerShape(12.dp))
+                                .background(MaterialTheme.colorScheme.surfaceVariant)
                         ) {
                             AsyncImage(
                                 model = receiptImagePath,
-                                contentDescription = "Receipt Preview",
+                                contentDescription = "Receipt Photo Preview",
                                 modifier = Modifier.fillMaxSize(),
                                 contentScale = ContentScale.Crop
                             )
@@ -327,38 +414,52 @@ fun AddEditItemScreen(
                                     .align(Alignment.TopEnd)
                                     .padding(8.dp)
                                     .clip(RoundedCornerShape(8.dp))
-                                    .background(MaterialTheme.colorScheme.surface.copy(alpha = 0.8f))
+                                    .background(MaterialTheme.colorScheme.surface.copy(alpha = 0.85f))
+                                    .testTag("remove_receipt_button")
                             ) {
-                                Icon(Icons.Default.Close, contentDescription = "Remove receipt")
+                                Icon(Icons.Default.Close, contentDescription = "Remove receipt photo")
                             }
                         }
-                        Spacer(modifier = Modifier.height(10.dp))
-                    }
 
-                    Row(
-                        modifier = Modifier.fillMaxWidth(),
-                        horizontalArrangement = Arrangement.spacedBy(8.dp)
-                    ) {
-                        OutlinedButton(
-                            onClick = {
-                                photoPickerLauncher.launch(
-                                    PickVisualMediaRequest(ActivityResultContracts.PickVisualMedia.ImageOnly)
-                                )
-                            },
-                            modifier = Modifier
-                                .weight(1f)
-                                .testTag("attach_receipt_photo_button")
+                        Spacer(modifier = Modifier.height(12.dp))
+
+                        // Actions when photo is present: Retake Photo, Choose from Gallery, Run OCR
+                        Row(
+                            modifier = Modifier.fillMaxWidth(),
+                            horizontalArrangement = Arrangement.spacedBy(8.dp)
                         ) {
-                            Icon(Icons.Default.AddPhotoAlternate, contentDescription = null, modifier = Modifier.size(16.dp))
-                            Spacer(modifier = Modifier.width(6.dp))
-                            Text(if (receiptImagePath == null) "Attach Photo" else "Replace Photo")
-                        }
+                            OutlinedButton(
+                                onClick = { launchCamera() },
+                                modifier = Modifier
+                                    .weight(1f)
+                                    .testTag("retake_photo_button")
+                            ) {
+                                Icon(Icons.Default.PhotoCamera, contentDescription = null, modifier = Modifier.size(16.dp))
+                                Spacer(modifier = Modifier.width(4.dp))
+                                Text("Retake")
+                            }
 
-                        if (!receiptImagePath.isNullOrBlank()) {
+                            OutlinedButton(
+                                onClick = {
+                                    photoPickerLauncher.launch(
+                                        PickVisualMediaRequest(ActivityResultContracts.PickVisualMedia.ImageOnly)
+                                    )
+                                },
+                                modifier = Modifier
+                                    .weight(1f)
+                                    .testTag("replace_gallery_button")
+                            ) {
+                                Icon(Icons.Default.PhotoLibrary, contentDescription = null, modifier = Modifier.size(16.dp))
+                                Spacer(modifier = Modifier.width(4.dp))
+                                Text("Gallery")
+                            }
+
                             Button(
                                 onClick = {
-                                    val uri = Uri.parse(receiptImagePath)
-                                    runOcrOnUri(uri)
+                                    receiptImagePath?.let { path ->
+                                        val uri = getUriForReceiptPath(path)
+                                        runOcrOnUri(uri)
+                                    }
                                 },
                                 enabled = !isOcrScanning,
                                 modifier = Modifier
@@ -373,9 +474,41 @@ fun AddEditItemScreen(
                                     )
                                 } else {
                                     Icon(Icons.Default.DocumentScanner, contentDescription = null, modifier = Modifier.size(16.dp))
-                                    Spacer(modifier = Modifier.width(6.dp))
-                                    Text("Run OCR")
+                                    Spacer(modifier = Modifier.width(4.dp))
+                                    Text("OCR")
                                 }
+                            }
+                        }
+                    } else {
+                        // Two clear actions: Take Photo & Choose from Gallery
+                        Row(
+                            modifier = Modifier.fillMaxWidth(),
+                            horizontalArrangement = Arrangement.spacedBy(10.dp)
+                        ) {
+                            Button(
+                                onClick = { launchCamera() },
+                                modifier = Modifier
+                                    .weight(1f)
+                                    .testTag("take_photo_button")
+                            ) {
+                                Icon(Icons.Default.PhotoCamera, contentDescription = null, modifier = Modifier.size(18.dp))
+                                Spacer(modifier = Modifier.width(6.dp))
+                                Text("Take Photo")
+                            }
+
+                            OutlinedButton(
+                                onClick = {
+                                    photoPickerLauncher.launch(
+                                        PickVisualMediaRequest(ActivityResultContracts.PickVisualMedia.ImageOnly)
+                                    )
+                                },
+                                modifier = Modifier
+                                    .weight(1f)
+                                    .testTag("choose_gallery_button")
+                            ) {
+                                Icon(Icons.Default.PhotoLibrary, contentDescription = null, modifier = Modifier.size(18.dp))
+                                Spacer(modifier = Modifier.width(6.dp))
+                                Text("From Gallery")
                             }
                         }
                     }
